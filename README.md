@@ -27,27 +27,53 @@ Non Blocking assignments execute sequentially in the given order, which makes it
 ## VERILOG CODE
 
 ### SR Flip-Flop (Non Blocking)
-```verilog
-module sr_ff (
-    input wire S, R, clk,
+```
+module srff(
+    input clk,
+    input S,
+    input R,
     output reg Q
 );
+
     always @(posedge clk) begin
-
-
+        case ({S,R})
+            2'b00: Q <= Q;
+            2'b01: Q <= 0;
+            2'b10: Q <= 1;
+            2'b11: Q <= 1'bx;
+            default: Q <= Q;
+        endcase
+    end
 
 endmodule
+
 ```
 ### SR Flip-Flop Test bench 
-```verilog
+```
+module srff_tb;
+  reg clk, S, R;
+  wire Q;
 
+  srff dut(.clk(clk), .S(S), .R(R), .Q(Q));
 
+  initial begin
+    clk = 0;
+    forever #10 clk = ~clk;
+  end
 
+  initial begin
+    S = 0; R = 0;
+    #100 S = 1; R = 0;
+    #100 S = 0; R = 0;
+    #100 S = 0; R = 1;
+    #100 S = 1; R = 1;
+    #100 S = 0; R = 0;
+  end
+endmodule
 ```
 #### SIMULATION OUTPUT
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/e9ee2613-831e-4ddf-b0e3-02ff5d516bef" />
 
-------- paste the output here -------
----
 
 ### JK Flip-Flop (Non Blocking)
 ```verilog
