@@ -174,29 +174,50 @@ endmodule
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/d81668d2-dcba-4a14-822b-dd21afdb95bd" />
 
 ### T Flip-Flop (Non Blocking)
-```verilog
-module d_ff (
-    input wire d,clk,
-    output reg Q
-);
-    always @(posedge clk) begin
+```
 
+module tff(clk, rst, T, Tout);
+    input clk, rst, T;
+    output reg Tout;
 
-
+    always @(posedge clk)
+    begin
+        if (rst)
+            Tout <= 1'b0;
+        else if (T)
+            Tout <= ~Tout;
+        else
+            Tout <= Tout;
+    end
 endmodule
+
 ```
 ### T Flip-Flop Test bench 
-```verilog
+```
+module tff_tb;
+    reg clk_t, rst_t, T_t;
+    wire Tout_t;
 
+    tff dut(.clk(clk_t), .rst(rst_t), .T(T_t), .Tout(Tout_t));
 
+    initial begin
+        clk_t = 1'b0;
+        rst_t = 1'b1;
+        #20 rst_t = 1'b0;
+        T_t = 1'b0;
+        #20 T_t = 1'b1;
+    end
+
+    always #10 clk_t = ~clk_t;
+
+endmodule
 
 ```
 
 #### SIMULATION OUTPUT
 
-------- paste the output here -------
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/9b08e241-f48e-4645-9832-56e0f486efb9" />
 
----
 
 ### RESULT
 
